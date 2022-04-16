@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="arqueo01" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e3cdc374-8cce-46f4-bbae-cf87e0de8cc0">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SQLSERVER2012"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="P_EMPRESA" class="java.lang.String"/>
+	<parameter name="P_FECHA" class="java.lang.String"/>
+	<parameter name="P_SECUENCIA" class="java.lang.Long"/>
+	<parameter name="P_ACTIVIDAD" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT 
+$P{P_EMPRESA} EMPRESA,
+$P{P_SECUENCIA} SECUENCIA,
+$P{P_FECHA} FECHA]]>
+	</queryString>
+	<field name="EMPRESA" class="java.lang.String"/>
+	<field name="SECUENCIA" class="java.lang.Long"/>
+	<field name="FECHA" class="java.lang.String"/>
+	<variable name="vtitulo" class="java.lang.String">
+		<variableExpression><![CDATA[$P{P_FECHA}]]></variableExpression>
+	</variable>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="78" splitType="Stretch">
+			<staticText>
+				<reportElement x="2" y="39" width="550" height="18" uuid="49d7546e-443b-44ae-8a2f-612f3b4a1155"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[ARQUEO DIARIO DETALLADO]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="2" y="58" width="550" height="18" uuid="ad1978e2-a8f7-4d29-b406-aa18180cc4c9"/>
+				<textElement textAlignment="Center">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA["FECHA " + $P{P_FECHA}]]></textFieldExpression>
+			</textField>
+			<textField pattern="MMMMM dd, yyyy">
+				<reportElement x="440" y="0" width="112" height="20" uuid="3ab5d34a-908f-45d2-9134-a31df35ff1af"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+			<textField pattern="HH:mm">
+				<reportElement x="440" y="20" width="112" height="18" uuid="b14577f4-b5a7-44d8-8117-a4d920dcc32e"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="41" splitType="Stretch">
+			<subreport>
+				<reportElement x="1" y="6" width="552" height="26" uuid="c4687373-720c-489b-8223-78a2439d0cf6"/>
+				<subreportParameter name="P_SUBEMPRESA">
+					<subreportParameterExpression><![CDATA[$F{EMPRESA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="P_SEBSECUENCIA">
+					<subreportParameterExpression><![CDATA[$F{SECUENCIA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["arqueo01_DET.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+		<band height="44">
+			<subreport>
+				<reportElement x="3" y="3" width="549" height="26" uuid="9dd9e3ec-754a-435d-9da2-5d42ecb0f5be">
+					<property name="com.jaspersoft.studio.unit.height" value="pixel"/>
+				</reportElement>
+				<subreportParameter name="P_EMPRESA">
+					<subreportParameterExpression><![CDATA[$P{P_EMPRESA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="P_ACTIVIDAD">
+					<subreportParameterExpression><![CDATA[$P{P_ACTIVIDAD}]]></subreportParameterExpression>
+				</subreportParameter>
+				<subreportParameter name="P_SECUENCIA">
+					<subreportParameterExpression><![CDATA[$P{P_SECUENCIA}]]></subreportParameterExpression>
+				</subreportParameter>
+				<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+				<subreportExpression><![CDATA["arqueo01_TOT.jasper"]]></subreportExpression>
+			</subreport>
+		</band>
+	</detail>
+	<columnFooter>
+		<band splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="3" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band splitType="Stretch"/>
+	</summary>
+</jasperReport>

@@ -1,0 +1,290 @@
+<%@page import="pe.com.gp.dao.AutenticaDAO"%>
+<%@page import="pe.com.gp.connection.ConectaDb"%>
+<%@page import="java.io.InputStream"%>
+<%@page import="java.util.Properties"%>
+<%@page import="pe.com.gp.util.Constantes"%>
+<%@page import="pe.com.gp.util.Util"%>
+<%@page import="pe.com.gp.entity.Usuario"%>
+<%@page import="java.util.Date"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.text.DateFormat"%>
+
+<%
+    // Comprobando si la sesion esta activa
+    if (!Util.sesionEstaActiva(request)) {
+        response.sendRedirect("relogin.jsp");
+        return;
+    }
+
+    // Obteniendo la fecha actual del sistema
+    DateFormat hdrDateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    Date hdrDate = new Date();
+
+    // Leyendo si el servidor es desarrollo o produccion
+    ConectaDb conectaDb = new ConectaDb();
+    String hdrServer = conectaDb.getServer();
+%>
+
+<%-- Menu --%>
+<div class="navbar navbar-default nav-container">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="icon-bar"></span><span class="icon-bar"></span><span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand goloading" href="index.jsp">
+                <img width="130" height="34" alt="Golden Shop" src="images/logo-empresa4-color.png" onerror="this.onerror=null; this.src='images/logo-empresa4-color.png'"/>
+                <span>WEB</span>
+            </a>
+        </div>
+
+        <div class="navbar-collapse collapse bs-submenu">
+            <ul class="nav navbar-nav" id="main-navbar">
+                
+            <li class="dropdown menu-item-padre">
+                    <a href="javascript:void(0)" class="item-padre" data-toggle="dropdown" data-submenu="" aria-expanded="false">Archivos</a>
+                    <ul class="dropdown-menu">
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0)" tabindex="0">Perfiles<span class="con-hijos"><%=Constantes.ICON_ANGLE_RIGHT%></span></a>
+                            <ul class="dropdown-menu">                              
+                                
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_CREAR_PERFILES)) {%>
+                                    <li><a href="PerfilAction.do?operacion=inicializa" tabindex="0" class="goloading">Crear Perfil</a></li>
+                                <%} else {%>
+                                    <li><a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Crear Perfil</a></li>
+                                <%}%> 
+                                    
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_ASIGNAR_PERFIL)) {%>
+                                    <li><a href="PerfilAction.do?operacion=inicializaAsignar" tabindex="0" class="goloading">Asignar Usuario-Perfil</a></li>                             
+                                <%} else {%>
+                                    <li><a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Asignar Usuario-Perfil</a></li>
+                                <%}%>                                                                                                         
+                            </ul>
+                        </li> 
+                        <li class="divider"></li>
+                        <li>
+                            <a href="responsablesMailAction.do?operacion=inicializa" tabindex="0" class="goloading">Asignar mail</a>
+                        </li>
+                            
+                        <li class="divider"></li>
+                        <li>                                
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_ASIGNAR_ASIGNA_EXRANET)) {%>
+                                    <a href="ProveedorAction.do?operacion=inicializa" tabindex="0" class="goloading">Asignar acceso extranet</a>
+                                <%} else {%>
+                                    <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Asignar acceso extranet</a>
+                                <%}%>                                 
+                        </li>                       
+                                                                                          
+                    </ul>
+                </li>
+                <%-- ADMINISTRATIVO --%>  
+                <li class="dropdown menu-item-padre">
+                    <a href="javascript:void(0)" class="item-padre" data-toggle="dropdown" data-submenu="" aria-expanded="false">Generales</a>
+                    <ul class="dropdown-menu">
+                        <li>                            
+                            <% if (Util.opcEnListaAccesos(request, Constantes.MNU_REGISTRO_DE_VENTAS)) {%>
+                                <a href="RegistroVentasAction.do?operacion=inicializa" tabindex="0" class="goloading">Registro de Ventas</a>
+                            <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Registro de Ventas</a> 
+                            <%}%>                              
+                        </li>
+                    </ul>
+                </li>
+                <%-- CAJERO --%>  
+                <li class="dropdown menu-item-padre">
+                    <a href="javascript:void(0)" class="item-padre" data-toggle="dropdown" data-submenu="" aria-expanded="false">Transferencias</a>
+                    <ul class="dropdown-menu">
+                        <li>                                    
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_MIGRAR_VENTAS)) {%>
+                                    <a href="RegistroVentasAction.do?operacion=inicializaMigrar&tipo=1bfYDf3FOXg" tabindex="0" class="goloading">Migrar registro de Ventas</a>
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Migrar registro de Ventas</a> 
+                                <%}%>                               
+                        </li>
+                        <li>
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_MIGRAR_COBRANZAS)) {%>
+                                    <a href="RegistroVentasAction.do?operacion=inicializaMigrar&tipo=mQWrEs_VpGM" tabindex="0" class="goloading">Migrar Cobranzas</a>
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Migrar Cobranzas</a> 
+                                <%}%>                               
+                        </li>
+                        <li>                            
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_COMPRAS)) {%>
+                                    <a href="ComprasMigrarAction.do?operacion=inicializa" tabindex="0" class="goloading">Migrar Compras</a>
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Migrar Compras</a> 
+                                <%}%>                                
+                        </li>
+                        <li class="divider"></li>
+                        <li>                            
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_PROVISIONAR_DOCUMENTOS)) {%>
+                                    <a href="PreProvisionAction.do?operacion=inicializa" tabindex="0" class="goloading">Provisionar Documento</a>
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Provisionar Documento</a> 
+                                <%}%>                                                          
+                        </li>
+                    </ul>
+                </li>                
+                <li class="dropdown menu-item-padre">
+                    <a href="javascript:void(0)" class="item-padre" data-toggle="dropdown" data-submenu="" aria-expanded="false">Gestion de Bancos</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_BANCARIAS_EMPRESA)) {%> 
+                                    <a href="ProveedorAction.do?operacion=inicializaCuentaEmpresa" tabindex="0" class="goloading">Cuentas bancaria de la empresa</a>
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Cuentas bancaria de la empresa</a> 
+                                <%}%>                          
+                        </li>                          
+                        <li>
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_CUENTAS_BANCARIAS_POR_PROVEEDOR)) {%> 
+                                    <a href="ProveedorAction.do?operacion=inicializaCuenta" tabindex="0" class="goloading">Cuentas bancarias por proveedor</a>
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Cuentas bancarias por proveedor</a> 
+                                <%}%>                          
+                        </li>                         
+                        <li class="divider"></li>
+                        <li>
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_PROGRAMACION_PAGOS)) {%>
+                                    <a href="fechaProgramacionDocAction.do?operacion=inicializa" tabindex="0" class="goloading">Programacion de pago de documentos</a>
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Programacion de pago de documentos</a> 
+                                <%}%>                          
+                        </li>  
+                        <li class="divider"></li>
+                        <%--
+                        <li>
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_PROGRAMACION_PAGOS)) {%>
+                                    <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Cancelacion de documentos - PROGRAMADAS</a> 
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Cancelacion de documentos - PROGRAMADAS</a> 
+                                <%}%>                             
+                        </li>                         
+                        <li>
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_PROGRAMACION_PAGOS)) {%>
+                                    <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Cancelacion de documentos</a> 
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Cancelacion de documentos</a> 
+                                <%}%>                          
+                        </li>
+                        --%>
+                        
+                        <li>
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_PROGRAMACION_POLIZA)) {%>
+                                    <a href="ProgramaPagosPolizaAction.do?operacion=inicializa" tabindex="0" class="goloading">Cancelacion de documentos - POLIZA</a>
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Cancelacion - POLIZA</a> 
+                                <%}%>                          
+                        </li>                        
+                        <li class="divider"></li>
+                         <li>
+                                <% if (Util.opcEnListaAccesos(request, Constantes.MNU_PROGRAMACION_PAGOS)) {%>
+                                    <a href="ArchivoBancoAction.do?operacion=inicializa" tabindex="0" class="goloading">Generar archivos bancarios - PLANILLA</a>
+                                <%} else {%>
+                                   <a href="javascript:void(0)" tabindex="0" class="menu-inactivo">Generar archivos bancarios - PLANILLA</a> 
+                                <%}%>                          
+                        </li>  
+                        <li class="divider"></li>
+                        <li class="dropdown-submenu">
+                            <a href="javascript:void(0)" tabindex="0">Reportes<span class="con-hijos"><%=Constantes.ICON_ANGLE_RIGHT%></span></a>
+                            <ul class="dropdown-menu">                                                                                             
+                                <li><a href="ArchivoBancoAction.do?operacion=inicializaConsulta" tabindex="0" class="goloading">Planillas</a></li>                                                                                                                                   
+                            </ul>
+                        </li>                        
+                        
+                    </ul>
+                </li> 
+                <li class="dropdown menu-item-padre">
+                    <a href="javascript:void(0)" class="item-padre" data-toggle="dropdown" data-submenu="" aria-expanded="false">Ayuda</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="index.jsp" onclick="ayudaHelp()"  class="goloading">Ayuda</a>
+                        </li>                                                  
+                    </ul>                
+                </li>
+            </ul>
+            <form class="navbar-form navbar-right">
+                <div class="form-group username-doble-line">
+                    <span class="username" id="responsive-username">
+                        <span class="c_a_logout">&nbsp;&nbsp;&nbsp;<a data-toggle="modal" href="#logoutModal" title="Cerrar sesi&oacute;n" id="a_logout"><%=Constantes.ICON_EXIT%>&nbsp;Cerrar sesi&oacute;n</a></span>
+                    </span>
+                    <div id="c-login-info">
+                        <!--
+                        <span class="username"><bean:write name="Tienda" property="nombre" />-<bean:write name="Tienda" property="actividadTienda" />&nbsp;<%=Constantes.ICON_USER%>&nbsp;&nbsp;<bean:write name="Usuario" property="nombre" />&nbsp;&nbsp;&nbsp;<%=Constantes.ICON_COG%>&nbsp;<%=hdrServer%>
+                            <span class="c_a_logout">&nbsp;&nbsp;<%=Constantes.ICON_EXIT%><a data-toggle="modal" href="#logoutModal" title="Cerrar sesi&oacute;n" id="a_logout">Cerrar sesi&oacute;n</a></span>
+                        </span>
+                        -->
+                        <span class="username"><bean:write name="Usuario" property="nombre" />&nbsp;&nbsp;&nbsp;<%=Constantes.ICON_COG%>&nbsp;<%=hdrServer%>
+                            <span class="c_a_logout">&nbsp;&nbsp;<%=Constantes.ICON_EXIT%><a data-toggle="modal" href="#logoutModal" title="Cerrar sesi&oacute;n" id="a_logout">Cerrar sesi&oacute;n</a></span>
+                        </span>                        
+                        <span class="otherinfo"><bean:write name="Usuario" property="nomTienda" />
+                            &nbsp;&nbsp;<%=Constantes.ICON_TIMER%> <%=hdrDateFormat.format(hdrDate)%> - <span id="g_tiempo_ind">30:00</span>
+                        </span>
+                    </div>
+                </div>
+            </form>
+            <div class="clear"></div>
+        </div>
+    </div>
+</div>
+
+<%-- Logout Modal --%>
+<div class="modal fade" id="logoutModal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-header">                
+                <h4 class="modal-title">Mensaje del sistema</h4>
+            </div>
+            <div class="modal-body">
+                ¡ Hey <strong><bean:write name="Usuario" property="nombre"/></strong> !, ¿est&aacute;s seguro(a) que deseas abandonar el sistema?
+            </div>
+            <div class="modal-footer">
+                <a href="LoginAuxiliarAction.do?operacion=logout" class="btn btn-sm btn-danger goloading" title="Deseo salir"><%=Constantes.ICON_EXIT%> Deseo salir</a>
+                <a href="javascript:void(0)" class="btn btn-sm btn-primary" data-dismiss="modal" title="A&uacute;n me quedo!"><%=Constantes.ICON_THUMBS_UP%> A&uacute;n me quedo!</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<%-- Contador de tiempo de actividad --%>
+<script type="text/javascript">
+    var intervalo_timer;
+    var timeout_timer;
+
+    function ayudaHelp(){
+       window.open("iReport/help.pdf", "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=800,height=800");
+    } 
+    
+    function iniTimerGlobal() {
+        var paginaLogout = "relogin.jsp";
+        var totalSegundos = 1800; // (30 min x 60 seg = 1800 seg       60 seg)
+        clearTimeout(timeout_timer);
+        clearInterval(intervalo_timer);
+        intervalo_timer = setInterval(setTime, 1000);
+
+        function setTime() {
+            if (totalSegundos <= 0) {
+                timeout_timer = setTimeout('location="' + paginaLogout + '"', 1);
+            }
+
+            if (totalSegundos > 0) {
+                totalSegundos -= 1;
+            }
+
+            var min = parseInt((totalSegundos / 60));
+            var seg = totalSegundos % 60;
+            document.getElementById('g_tiempo_ind').innerHTML = visor(min) + ":" + visor(seg);
+        }
+
+        function visor(val) {
+            var valString = val + "";
+            if (valString.length < 2) {
+                return "0" + valString;
+            } else {
+                return valString;
+            }
+        }
+    }
+
+    // Inicia contador de tiempo de actividad
+    iniTimerGlobal();
+</script>

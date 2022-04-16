@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.4.0.final using JasperReports Library version 6.4.1  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Blank_A4_1" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="98cd3e18-009c-4ef6-83bb-05f0e961ca1e">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="SQL"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="P_EMPRESA" class="java.lang.String"/>
+	<parameter name="P_ACTIVIDAD" class="java.lang.String"/>
+	<parameter name="P_SECUENCIA" class="java.lang.Long"/>
+	<queryString>
+		<![CDATA[select 
+dbo.uf_desc_abrev_act( $P{P_EMPRESA},   c_c_actividad) t_tienda,
+t_pago,
+sum(N_I_PAGO_sol) soles,
+sum(N_I_PAGO_dol) dolar
+from TMP_ARQUEO_DET 
+where 
+c_c_empresa=$P{P_EMPRESA}  and 
+N_N_SECUENCIA=    $P{P_SECUENCIA}  and t_pago is not null
+and isnull(c_c_actividad,'%') like  $P{P_ACTIVIDAD} 
+group by
+c_c_actividad,t_pago]]>
+	</queryString>
+	<field name="t_tienda" class="java.lang.String"/>
+	<field name="t_pago" class="java.lang.String"/>
+	<field name="soles" class="java.math.BigDecimal"/>
+	<field name="dolar" class="java.math.BigDecimal"/>
+	<variable name="TOT_SOLES" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{soles}]]></variableExpression>
+	</variable>
+	<variable name="TOT_DOLARES" class="java.lang.Double" resetType="Group" resetGroup="Group1" calculation="Sum">
+		<variableExpression><![CDATA[$F{dolar}]]></variableExpression>
+	</variable>
+	<group name="Group1">
+		<groupExpression><![CDATA[$F{t_tienda}]]></groupExpression>
+		<groupHeader>
+			<band height="21">
+				<staticText>
+					<reportElement x="201" y="2" width="100" height="16" uuid="9d516c62-3929-455b-8cc6-cb2b1039a8c0"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[S/.]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="300" y="2" width="100" height="16" uuid="9ca2bca7-f5ef-4afe-93b2-7ba42566c792"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[US$]]></text>
+				</staticText>
+				<staticText>
+					<reportElement x="100" y="2" width="100" height="17" uuid="ad483570-97c6-40ca-b1ca-37fe65f4bb7d"/>
+					<textElement textAlignment="Center"/>
+					<text><![CDATA[FORMA DE PAGO]]></text>
+				</staticText>
+				<line>
+					<reportElement x="100" y="18" width="300" height="1" uuid="0c85d609-1658-4c0c-8b66-595d84651708"/>
+				</line>
+				<line>
+					<reportElement x="100" y="1" width="300" height="1" uuid="51592fc1-5f88-427e-8ec2-7438c9e4bf8c"/>
+				</line>
+			</band>
+		</groupHeader>
+		<groupFooter>
+			<band height="25">
+				<textField pattern="#,##0.00;(#,##0.00)">
+					<reportElement x="200" y="4" width="100" height="20" uuid="f6e41e1c-6d02-4b84-a574-ef022af4a16f"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{TOT_SOLES}]]></textFieldExpression>
+				</textField>
+				<textField pattern="#,##0.00#;(#,##0.00#)">
+					<reportElement x="300" y="4" width="100" height="20" uuid="df96e6e2-c3ec-446b-b197-8ddd09c37e73"/>
+					<textElement textAlignment="Right"/>
+					<textFieldExpression><![CDATA[$V{TOT_DOLARES}]]></textFieldExpression>
+				</textField>
+				<line>
+					<reportElement x="200" y="3" width="200" height="1" uuid="06e72221-5a9e-4246-bb14-8485a2f8bdc9"/>
+				</line>
+				<line>
+					<reportElement x="201" y="24" width="200" height="1" uuid="598011e5-f720-4c6a-a3e8-ab4ba1febf8f"/>
+				</line>
+			</band>
+		</groupFooter>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="23" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="1" width="97" height="20" uuid="04312826-acfc-47e8-b656-d3383b3c1c0a"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="14" isBold="true"/>
+				</textElement>
+				<text><![CDATA[TIENDA]]></text>
+			</staticText>
+			<textField>
+				<reportElement x="100" y="1" width="137" height="20" uuid="4b97666f-ce4d-48b5-bd57-90a8bb4af74a"/>
+				<textElement textAlignment="Left" verticalAlignment="Middle">
+					<font isBold="true"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{t_tienda}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="25" splitType="Stretch">
+			<textField>
+				<reportElement x="201" y="1" width="100" height="20" uuid="d55ff6f6-aade-4662-bd1e-d04b77582604"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{soles}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="301" y="1" width="100" height="20" uuid="acb7d090-3a83-43d2-9433-602198332668"/>
+				<textElement textAlignment="Right"/>
+				<textFieldExpression><![CDATA[$F{dolar}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="100" y="1" width="100" height="20" uuid="cf84f412-7d76-4495-bcf2-f42b8e3906b0"/>
+				<textElement textAlignment="Left"/>
+				<textFieldExpression><![CDATA[$F{t_pago}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="1" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="2" splitType="Stretch"/>
+	</summary>
+</jasperReport>
